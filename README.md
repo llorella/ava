@@ -1,2 +1,83 @@
-# ava
-ava, the assistant that helps track what you put in and on your body
+# Ava - Personal Health Assistant
+
+Ava is a personal health assistant that analyzes ingredient labels from food, beauty, and household products and provides health insights through a conversational chat interface.
+
+## Features
+
+- **Scan Product Labels**: Take a photo of any product label to analyze its ingredients
+- **Ingredient Analysis**: Get detailed information about each ingredient, including health ratings and potential risks
+- **Personalized Insights**: Receive tailored health insights based on your allergies, dietary preferences, and skin conditions
+- **Chat Interface**: Ask questions about products and get personalized health advice
+
+## Tech Stack
+
+### Frontend
+- React Native (TypeScript)
+- React Navigation
+- React Context API for state management
+- Formik & Yup for form validation
+
+### Backend
+- Node.js with Express.js
+- PostgreSQL database
+- Prisma ORM
+- JWT authentication
+- Zod for input validation
+
+### Services
+- Mock OCR service (placeholder for Google Cloud Vision API)
+- Mock LLM service (placeholder for GPT API)
+
+## Project Structure
+
+```
+ava/
+├── client/                 # React Native frontend
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── screens/        # App screens
+│   │   ├── context/        # React Context for state management
+│   │   ├── services/       # API services
+│   │   ├── types/          # TypeScript type definitions
+│   │   └── App.tsx         # Main app component
+├── server/                 # Node.js + Express backend
+│   ├── src/
+│   │   ├── controllers/    # Route handlers
+│   │   ├── middleware/     # Express middleware
+│   │   ├── routes/         # API routes
+│   │   ├── services/       # Business logic
+│   │   ├── mocks/          # Mock services (OCR, LLM)
+│   │   └── types/          # TypeScript type definitions
+│   ├── prisma/             # Prisma ORM
+│   │   ├── schema.prisma   # Database schema
+│   │   └── migrations/     # Database migrations
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+)
+- PostgreSQL
+- React Native development environment
+
+### Installation
+
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/ava.git
+   cd ava
+   ```
+
+2. Install dependencies
+   ```
+   npm run setup
+   ```
+
+3. Set up the database
+   ```
+   cd server
+   npx prisma migrate dev
+   npx prisma db seed
+   ```
+
