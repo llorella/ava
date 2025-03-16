@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import request from 'supertest';
 import { PrismaClient } from '@prisma/client';
+import ocrService from '../../services/ocr';
 
 // Get the Prisma client instance mock
 export const getMockPrisma = (): jest.Mocked<PrismaClient> => {
@@ -66,3 +67,9 @@ export const testIngredients = [
     updatedAt: new Date(),
   },
 ];
+
+// OCR testing utilities
+export const setOcrProviderForTest = (provider: 'mistral' | 'google' | 'mock') => {
+  ocrService.setProvider(provider);
+  console.log(`OCR provider set to ${provider} for testing`);
+};

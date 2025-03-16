@@ -25,7 +25,7 @@ Ava is a personal health assistant that analyzes ingredient labels from food, be
 - Zod for input validation
 
 ### Services
-- Mock OCR service (placeholder for Google Cloud Vision API)
+- Multi-provider OCR service (supports Mistral OCR, Google Cloud Vision, and mock data)
 - Mock LLM service (placeholder for GPT API)
 
 ## Project Structure
@@ -46,7 +46,7 @@ ava/
 │   │   ├── middleware/     # Express middleware
 │   │   ├── routes/         # API routes
 │   │   ├── services/       # Business logic
-│   │   ├── mocks/          # Mock services (OCR, LLM)
+│   │   ├── mocks/          # Mock services (LLM)
 │   │   └── types/          # TypeScript type definitions
 │   ├── prisma/             # Prisma ORM
 │   │   ├── schema.prisma   # Database schema
@@ -81,3 +81,20 @@ ava/
    npx prisma db seed
    ```
 
+4. Configure environment variables
+   ```
+   # In server/.env
+   OCR_PROVIDER="mistral" # Options: mistral, google, mock
+   MISTRAL_API_KEY="your-mistral-api-key"
+   GOOGLE_API_KEY="your-google-api-key" # Optional, if using Google Vision
+   ```
+
+## OCR Service
+
+The application now features a multi-provider OCR service that can use different OCR engines:
+
+- **Mistral OCR** (default): Uses the Mistral AI OCR API
+- **Google Vision**: Uses the Google Cloud Vision API
+- **Mock**: Uses predefined mock data for testing
+
+For more details, see [OCR Service Documentation](server/OCR_SERVICE.md).

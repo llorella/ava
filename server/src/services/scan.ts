@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AnalyzedIngredient, UserPreferences } from '../types';
-import ocrService from '../mocks/ocr';
+import ocrService from './ocr';
 import ingredientService from './ingredient';
 
 const prisma = new PrismaClient();
