@@ -26,7 +26,7 @@ Ava is a personal health assistant that analyzes ingredient labels from food, be
 
 ### Services
 - Multi-provider OCR service (supports Mistral OCR, Google Cloud Vision, and mock data)
-- Mock LLM service (placeholder for GPT API)
+- OpenAI-powered LLM service for intelligent chat responses
 
 ## Project Structure
 
@@ -45,13 +45,15 @@ ava/
 │   │   ├── controllers/    # Route handlers
 │   │   ├── middleware/     # Express middleware
 │   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   ├── mocks/          # Mock services (LLM)
+│   │   ├── services/       # Business logic and services (OCR, LLM)
+│   │   ├── __tests__/      # Test files (currently being rebuilt)
 │   │   └── types/          # TypeScript type definitions
 │   ├── prisma/             # Prisma ORM
 │   │   ├── schema.prisma   # Database schema
 │   │   └── migrations/     # Database migrations
 ```
+
+> **Note**: The testing suite is currently being rebuilt. See [Testing Documentation](server/TESTING.md) for details.
 
 ## Getting Started
 
@@ -84,9 +86,14 @@ ava/
 4. Configure environment variables
    ```
    # In server/.env
+   # OCR Configuration
    OCR_PROVIDER="mistral" # Options: mistral, google, mock
    MISTRAL_API_KEY="your-mistral-api-key"
    GOOGLE_API_KEY="your-google-api-key" # Optional, if using Google Vision
+   
+   # OpenAI Configuration
+   OPENAI_API_KEY="your-openai-api-key"
+   OPENAI_MODEL="gpt-4o-mini" # Options: gpt-4o-mini, gpt-4o, gpt-3.5-turbo
    ```
 
 ## OCR Service
@@ -98,3 +105,13 @@ The application now features a multi-provider OCR service that can use different
 - **Mock**: Uses predefined mock data for testing
 
 For more details, see [OCR Service Documentation](server/OCR_SERVICE.md).
+
+## LLM Service
+
+The application uses an OpenAI-powered LLM service for generating intelligent responses in the chat interface:
+
+- Uses a specialized system prompt tailored for health and ingredient analysis
+- Configurable model selection (gpt-4o-mini, gpt-4o, gpt-3.5-turbo)
+- Comprehensive error handling with graceful fallbacks
+
+For more details, see [LLM Service Documentation](server/LLM_SERVICE.md).

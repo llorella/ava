@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UserPreferences } from '../types';
-import llmService from '../mocks/llm';
+import llmService from '../services/llm';
 
 const prisma = new PrismaClient();
 
