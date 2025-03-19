@@ -152,7 +152,7 @@ async function main() {
   await prisma.user.create({
     data: {
       email: "demo@example.com",
-      passwordHash: "$2b$10$demohashedpasswordforprototype", // This is not a real hash
+      passwordHash: "$2b$10$iE1Urb6Z8g5MAoDBrFOzmO6UhN62PzdZic9Jf9z7nEpm.XYK1SM.2", // Hash for "password123"
       allergies: ["Fragrance", "Parabens"],
       dietaryPreferences: ["Vegan", "Gluten-Free"],
       skinConditions: ["Sensitive Skin", "Eczema"]

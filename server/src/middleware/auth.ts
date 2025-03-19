@@ -41,5 +41,5 @@ export const mockAuthenticate = (req: AuthRequest, res: Response, next: NextFunc
   next();
 };
 
-// Use mock authentication for development, real authentication for production
-export default process.env.NODE_ENV === 'production' ? authenticate : mockAuthenticate;
+// Always use real authentication
+export default authenticate;

@@ -103,7 +103,7 @@ export default new OpenAiService();
 
 // for testing
 
-const testService = new OpenAiService();
+/* const testService = new OpenAiService();
 testService.generateResponse("What are the ingredients in Coca-Cola?").then(response => {
   console.log('Test response:', response);
-});
+}); */
