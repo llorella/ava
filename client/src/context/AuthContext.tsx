@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthState, User } from '../types';
-import { authAPI } from '../services/api';
+import { authAPI, userAPI, UserNotFoundError } from '../services/api';
+import { Alert } from 'react-native';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
@@ -29,22 +30,51 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AuthState>(initialState);
   
-  // Load token from storage on mount
+  // Validate token and load user data
   useEffect(() => {
-    const loadToken = async () => {
+    const validateToken = async () => {
       try {
+        setState(prevState => ({ ...prevState, loading: true }));
+        
         const token = await AsyncStorage.getItem('token');
         const userJson = await AsyncStorage.getItem('user');
         
         if (token && userJson) {
           const user = JSON.parse(userJson) as User;
-          setState({
-            isAuthenticated: true,
-            user,
-            token,
-            loading: false,
-            error: null
-          });
+          
+          // Validate token by making a request to get user profile
+          try {
+            await userAPI.getProfile();
+            
+            // If successful, set authenticated state
+            setState({
+              isAuthenticated: true,
+              user,
+              token,
+              loading: false,
+              error: null
+            });
+          } catch (error) {
+            console.error('Token validation error:', error);
+            
+            // If user not found, clear auth data and show alert
+            if (error instanceof UserNotFoundError) {
+              await AsyncStorage.removeItem('token');
+              await AsyncStorage.removeItem('user');
+              
+              Alert.alert(
+                'Session Expired',
+                'Your session has expired. Please log in again.',
+                [{ text: 'OK' }]
+              );
+            }
+            
+            setState({
+              ...initialState,
+              loading: false,
+              error: 'Authentication failed'
+            });
+          }
         } else {
           setState({
             ...initialState,
@@ -61,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
     
-    loadToken();
+    validateToken();
   }, []);
   
   // Login

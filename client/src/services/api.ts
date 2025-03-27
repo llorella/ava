@@ -2,6 +2,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserPreferences, ScanResult, Message } from '../types';
 
+// Create a custom error class for user not found errors
+export class UserNotFoundError extends Error {
+  constructor(message: string = 'User not found') {
+    super(message);
+    this.name = 'UserNotFoundError';
+  }
+}
+
 // Create axios instance
 const api = axios.create({
   baseURL: 'http://localhost:3001/api',
@@ -10,7 +18,7 @@ const api = axios.create({
   }
 });
 
-// Add token to requests
+// Add token to requests and handle auth errors
 api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('token');
@@ -20,6 +28,28 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Handle response errors
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    // Check if it's a user not found error
+    if (error.response && 
+        error.response.status === 401 && 
+        error.response.data && 
+        error.response.data.code === 'USER_NOT_FOUND') {
+      
+      // Clear auth data
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
+      
+      // Throw a specific error that can be caught by the auth context
+      throw new UserNotFoundError();
+    }
+    
+    return Promise.reject(error);
+  }
 );
 
 // Auth API
@@ -73,9 +103,31 @@ export const scanAPI = {
 
 // Chat API
 export const chatAPI = {
-  sendMessage: async (message: string, productId?: string) => {
-    const response = await api.post('/chat', { message, productId });
-    return response.data.message as string;
+  sendMessage: async (message: string, productId?: string, conversationId?: string) => {
+    const response = await api.post('/chat', { message, productId, conversationId });
+    return {
+      message: response.data.message as string,
+      conversationId: response.data.conversationId as string
+    };
+  },
+  
+  createConversation: async (initialMessage?: string, productId?: string, title?: string) => {
+    const response = await api.post('/chat/conversations', { initialMessage, productId, title });
+    return response.data.conversation;
+  },
+  
+  getConversation: async (conversationId: string) => {
+    const response = await api.get(`/chat/conversations/${conversationId}`);
+    return response.data.conversation;
+  },
+  
+  getConversations: async (limit?: number, offset?: number) => {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (offset) params.append('offset', offset.toString());
+    
+    const response = await api.get(`/chat/conversations?${params.toString()}`);
+    return response.data.conversations;
   }
 };
 

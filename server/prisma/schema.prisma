@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id                 String   @id @default(uuid())
-  email              String   @unique
+  id                 String         @id @default(uuid())
+  email              String         @unique
   passwordHash       String
-  allergies          Json     @default("[]")
-  dietaryPreferences Json     @default("[]")
-  skinConditions     Json     @default("[]")
-  createdAt          DateTime @default(now())
+  allergies          Json           @default("[]")
+  dietaryPreferences Json           @default("[]")
+  skinConditions     Json           @default("[]")
+  createdAt          DateTime       @default(now())
+  conversations      Conversation[]
 }
 
 model Product {
@@ -27,6 +28,7 @@ model Product {
   barcode          String?
   createdAt        DateTime           @default(now())
   ingredients      ProductIngredient[]
+  conversations    Conversation[]
 }
 
 model Ingredient {
@@ -47,4 +49,25 @@ model ProductIngredient {
   ingredient       Ingredient @relation(fields: [ingredientId], references: [id])
 
   @@id([productId, ingredientId])
+}
+
+model Conversation {
+  id          String    @id @default(uuid())
+  userId      String
+  title       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  messages    Message[]
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  content        String
+  sender         String       // 'user' or 'ava'
+  timestamp      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
 }

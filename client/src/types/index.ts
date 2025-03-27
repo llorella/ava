@@ -59,9 +59,22 @@ export interface Message {
   text: string;
   sender: 'user' | 'ava';
   timestamp: string;
+  conversationId?: string;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: Message[];
+  productId?: string;
+  product?: Product;
 }
 
 export interface ChatState {
+  conversations: Conversation[];
+  currentConversation: Conversation | null;
   messages: Message[];
   loading: boolean;
   error: string | null;

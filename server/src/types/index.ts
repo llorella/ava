@@ -117,3 +117,47 @@ export interface AuthRequest extends Request {
   user?: JwtPayload;
   body: any;
 }
+
+// Conversation types
+export interface Conversation {
+  id: string;
+  userId: string;
+  title?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  productId?: string;
+}
+
+export interface ConversationWithMessages extends Conversation {
+  messages: Message[];
+  product?: Product;
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  content: string;
+  sender: 'user' | 'ava';
+  timestamp: Date;
+}
+
+export interface MessageCreateInput {
+  conversationId: string;
+  content: string;
+  sender: 'user' | 'ava';
+}
+
+export interface ConversationCreateInput {
+  userId: string;
+  title?: string;
+  productId?: string;
+  initialMessage?: string;
+}
+
+export interface ConversationListResponse {
+  conversations: ConversationWithMessages[];
+}
+
+export interface ConversationResponse {
+  conversation: ConversationWithMessages;
+}
